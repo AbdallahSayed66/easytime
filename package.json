@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build:bridge": "esbuild capacitor-bridge.js --bundle --outfile=assist/js/capacitor-bundle.js --format=iife",
-    "build:www": "if not exist www mkdir www && copy index.html www\\ && xcopy assist www\\assist\\ /E /I /Y",
+    "build:www": "mkdir -p www && cp index.html www/ && cp -r assist www/",
     "build": "npm run build:bridge && npm run build:www"
   },
   "keywords": [],
