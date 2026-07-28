@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name"> Easy TimeTable</string>
+    <string name="title_activity_main"> Easy TimeTable</string>
+    <string name="package_name">com.easytimetable.app</string>
+    <string name="custom_url_scheme">com.easytimetable.app</string>
+</resources>

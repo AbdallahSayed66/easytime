@@ -1,0 +1,24 @@
+{
+  "name": "easy-timetable-v2-main",
+  "version": "1.0.0",
+  "description": "منصة Easy TimeTable تساعد الطلاب على تنظيم جدولهم الدراسي بسهولة — تتبع الواجبات، الامتحانات، والدروس في مكان واحد مع نظام نقاط تفاعلي يشجعك على المذاكرة.",
+  "main": "index.js",
+  "scripts": {
+    "build:bridge": "esbuild capacitor-bridge.js --bundle --outfile=assist/js/capacitor-bundle.js --format=iife",
+    "build:www": "if not exist www mkdir www && copy index.html www\\ && xcopy assist www\\assist\\ /E /I /Y",
+    "build": "npm run build:bridge && npm run build:www"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@capacitor/android": "^8.4.2",
+    "@capacitor/core": "^8.4.2",
+    "@capacitor/local-notifications": "^8.2.1"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.4.2",
+    "esbuild": "^0.28.1"
+  }
+}

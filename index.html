@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+        <!-- تحسين محركات البحث الأساسي -->
+    <meta name="robots" content="index, follow">
+    <meta name="googlebot" content="index, follow">
+    
+    <!-- أهم سطرين للترتيب: العنوان والوصف -->
+    <title>جدول مذاكرة وتنظيم وقت للطلاب | Easy TimeTable – منصة تفاعلية</title>
+    <meta name="description" content="أنشئ جدول مذاكرة ذكي وتابع واجباتك وامتحاناتك في منصة واحدة. Easy TimeTable يساعدك على تنظيم وقت المذاكرة بنظام نقاط تفاعلي يشجعك تلتزم وتحقق أهدافك الدراسية.">
+    
+    <!-- الكلمات المفتاحية (جوجل بطل يعتمد عليها بس مفيدة للسياق) -->
+    <meta name="keywords" content="جدول مذاكرة, تنظيم وقت للطلاب, مذاكرة, جدول دراسي, جدول مذاكرة يومي, تنظيم الدراسة, إدارة الوقت, تطبيق جدول مذاكرة, منصة تعليمية, واجبات, امتحانات, Easy TimeTable">
+    
+    <meta name="author" content="Easy TimeTable Team">
+    
+    <!-- Open Graph للفيسبوك وواتساب -->
+    <meta property="og:title" content="جدول مذاكرة وتنظيم وقت للطلاب | Easy TimeTable">
+    <meta property="og:description" content="نظّم مذاكرتك بذكاء. جدول دراسي تفاعلي مع تتبّع المهام ونظام نقاط يشجعك. مثالي لتنظيم وقت الطلاب.">
+    <meta property="og:image" content="https://easy-time-table-v2.vercel.app/assist/image/CompressJPEG.Online_img(512x512).png">
+    <meta property="og:url" content="https://easy-time-table-v2.vercel.app/">
+    <meta property="og:type" content="website">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="جدول مذاكرة وتنظيم وقت للطلاب | Easy TimeTable">
+    <meta name="twitter:description" content="نظّم مذاكرتك بذكاء. جدول دراسي تفاعلي مع تتبّع المهام ونظام نقاط يشجعك.">
+    <meta name="twitter:image" content="https://easy-time-table-v2.vercel.app/assist/image/CompressJPEG.Online_img(512x512).png">
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="assist/image/CompressJPEG.Online_img(512x512).png" type="image/x-icon">
+    
+    <!-- Fonts & Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="assist/css/style.css">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <meta name="google-site-verification" content="VLib1YHM2N_Pu3DaRdAhzzhsBra5213UzjGzfqEd17Y" />
+    <!-- بيانات منظمة (Rich Snippet) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Easy TimeTable",
+      "description": "منصة تفاعلية لإنشاء جدول مذاكرة وتنظيم وقت الطلاب مع نظام نقاط تحفيزي.",
+      "url": "https://easy-time-table-v2.vercel.app/",
+      "applicationCategory": "EducationalApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
+
+    
+</head>
+<body>
+    <!-- صفحة المصادقة -->
+    <div class="auth-container" id="authContainer">
+        <div class="auth-form">
+            <div class="auth-tabs">
+                <div class="auth-tab active" onclick="switchAuthTab('login')">تسجيل الدخول</div>
+                <div class="auth-tab" onclick="switchAuthTab('register')">إنشاء حساب</div>
+            </div>
+
+            <!-- تسجيل الدخول -->
+            <div class="auth-content active" id="loginContent">
+                <h2>مرحباً بعودتك!</h2>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="loginEmail">البريد الإلكتروني</label>
+                        <input type="email" id="loginEmail" class="form-control" placeholder="example@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">كلمة المرور</label>
+                        <input type="password" id="loginPassword" class="form-control" placeholder="كلمة المرور" required>
+                    </div>
+                    <div class="loading" id="loginLoading">
+                        <div class="loading-spinner"></div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">تسجيل الدخول</button>
+                </form>
+                <a class="auth-link" onclick="switchAuthTab('forgot')">نسيت كلمة المرور؟</a>
+            </div>
+
+            <!-- إنشاء حساب -->
+            <div class="auth-content" id="registerContent">
+                <h2>انضم إلينا!</h2>
+                <form id="registerForm">
+                    <div class="form-group">
+                        <label for="registerName">الاسم الكامل</label>
+                        <input type="text" id="registerName" class="form-control" placeholder="أدخل اسمك الكامل" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerEmail">البريد الإلكتروني</label>
+                        <input type="email" id="registerEmail" class="form-control" placeholder="example@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerPassword">كلمة المرور</label>
+                        <input type="password" id="registerPassword" class="form-control" placeholder="كلمة المرور (6 أحرف على الأقل)" minlength="6" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerGrade">المرحلة الدراسية</label>
+                        <select id="registerGrade" class="select-control" required>
+                            <option value="">اختر المرحلة الدراسية</option>
+                            <optgroup label="المرحلة الابتدائية">
+                                <option value="grade1">الصف الأول الابتدائي</option>
+                                <option value="grade2">الصف الثاني الابتدائي</option>
+                                <option value="grade3">الصف الثالث الابتدائي</option>
+                                <option value="grade4">الصف الرابع الابتدائي</option>
+                                <option value="grade5">الصف الخامس الابتدائي</option>
+                                <option value="grade6">الصف السادس الابتدائي</option>
+                            </optgroup>
+                            <optgroup label="المرحلة الإعدادية">
+                                <option value="grade7">الصف الأول الإعدادي</option>
+                                <option value="grade8">الصف الثاني الإعدادي</option>
+                                <option value="grade9">الصف الثالث الإعدادي</option>
+                            </optgroup>
+                            <optgroup label="المرحلة الثانوية">
+                                <option value="grade10">الصف الأول الثانوي</option>
+                                <option value="grade11">الصف الثاني الثانوي</option>
+                                <option value="grade12">الصف الثالث الثانوي</option>
+                            </optgroup>
+                            <optgroup label="المرحلة الجامعية">
+                                <option value="uni1">السنة الأولى جامعة</option>
+                                <option value="uni2">السنة الثانية جامعة</option>
+                                <option value="uni3">السنة الثالثة جامعة</option>
+                                <option value="uni4">السنة الرابعة جامعة</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div class="loading" id="registerLoading">
+                        <div class="loading-spinner"></div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">إنشاء حساب</button>
+                </form>
+                <a class="auth-link" onclick="switchAuthTab('login')">لديك حساب بالفعل؟ سجل الدخول</a>
+            </div>
+
+            <!-- استعادة كلمة المرور -->
+            <div class="auth-content" id="forgotContent">
+                <h2>استعادة كلمة المرور</h2>
+                <form id="forgotForm">
+                    <div class="form-group">
+                        <label for="forgotEmail">البريد الإلكتروني</label>
+                        <input type="email" id="forgotEmail" class="form-control" placeholder="example@email.com" required>
+                    </div>
+                    <div class="loading" id="forgotLoading">
+                        <div class="loading-spinner"></div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">إرسال رابط الاستعادة</button>
+                </form>
+                <a class="auth-link" onclick="switchAuthTab('login')">العودة لتسجيل الدخول</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- التطبيق الرئيسي -->
+    <div class="app-container" id="appContainer">
+        <div class="container">
+            <!-- الشريط الجانبي -->
+            <div class="sidebar">
+                <div class="sidebar-header">
+                    <h2>Easy TimeTable</h2>
+                    <p>مساعدك الدراسي الذكي</p>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="#" class="active" data-page="dashboard"><i class="fas fa-home"></i> <span>Dashboard</span></a></li>
+                    <li><a href="#" data-page="home"><i class="fas fa-chart-line"></i> <span>الإحصائيات</span></a></li>
+                    <li><a href="#" data-page="timetable"><i class="fas fa-calendar-alt"></i> <span>الجدول الدراسي</span></a></li>
+                    <li><a href="#" data-page="exams"><i class="fas fa-file-alt"></i> <span>جدول الامتحانات</span></a></li>
+                    <li><a href="#" data-page="focus"><i class="fas fa-clock"></i> <span>وضع التركيز</span></a></li>
+                    <li><a href="#" data-page="profile"><i class="fas fa-user"></i> <span>الملف الشخصي</span></a></li>
+                </ul>
+            </div>
+
+            <!-- المحتوى الرئيسي -->
+            <div class="main-content">
+                <!-- رأس الصفحة -->
+                <div class="page-header">
+                    <h1 id="pageTitle">Dashboard</h1>
+                    <div class="header-controls">
+                        <button class="theme-toggle" id="themeToggle" title="تبديل الوضع">
+                            <i class="fas fa-moon"></i>
+                        </button>
+                        <button class="language-toggle" id="languageToggle">
+                            <span>EN</span>
+                        </button>
+                        <div class="user-menu">
+                            <div class="user-avatar" id="userAvatar">?</div>
+                            <span id="userName">طالب</span>
+                            <button class="logout-btn" onclick="logout()">تسجيل الخروج</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dashboard -->
+                <div class="page active" id="dashboard">
+                    <div class="dashboard-header">
+                        <div class="today-summary">
+                            <div class="summary-card">
+                                <div class="summary-value" id="todayDay"> ToDay</div>
+                                <div class="summary-label">اليوم</div>
+                            </div>
+                            <div class="summary-card">
+                                <div class="summary-value" id="todayClasses">0</div>
+                                <div class="summary-label">عدد الحصص</div>
+                            </div>
+                            <div class="summary-card">
+                                <div class="summary-value" id="nextClassTime">--:--</div>
+                                <div class="summary-label">الحصة التالية</div>
+                            </div>
+                            <div class="summary-card">
+                                <div class="summary-value" id="nextSubject">--</div>
+                                <div class="summary-label">المادة القادمة</div>
+                            </div>
+                        </div>
+                        <div class="daily-motivation" id="dailyMotivation">
+                            ابدأ يومك بنشاط 💪
+                        </div>
+                    </div>
+
+                    <div class="progress-section">
+                        <div class="progress-circle" id="progressCircle" style="--progress: 0%">
+                            <div class="progress-text" id="progressText">0%</div>
+                        </div>
+                        <div class="progress-info">
+                            <div class="progress-label">تقدم الأسبوع</div>
+                            <div class="progress-message" id="progressMessage">ابدأ بإضافة مهامك اليومية</div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>جدول اليوم</h3>
+                            <button class="btn btn-primary" onclick="openAddSubjectModal()">
+                                <i class="fas fa-plus"></i> إضافة مادة
+                            </button>
+                        </div>
+                        <div class="today-schedule" id="todaySchedule">
+                            <div class="empty-state">
+                                <i class="fas fa-calendar-day"></i>
+                                <p>لا توجد حصص لهذا اليوم</p>
+                                <button class="btn btn-primary" onclick="openAddSubjectModal()">إضافة حصص</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>المهام القادمة</h3>
+                            <button class="btn btn-primary" onclick="openAddTaskModal()">
+                                <i class="fas fa-plus"></i> إضافة مهمة
+                            </button>
+                        </div>
+                        <div id="upcomingTasks">
+                            <div class="empty-state">
+                                <i class="fas fa-tasks"></i>
+                                <p>لا توجد مهام حالياً</p>
+                                <button class="btn btn-primary" onclick="openAddTaskModal()">إضافة أول مهمة</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- الإحصائيات السريعة -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number" id="weeklyProgress">0%</div>
+                            <div class="stat-label">تقدم الأسبوع</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="studyHours">0</div>
+                            <div class="stat-label">ساعة دراسة</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="tasksCompleted">0</div>
+                            <div class="stat-label">مهام مكتملة</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="streakDays">0</div>
+                            <div class="stat-label">أيام متتالية</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- الصفحة الرئيسية -->
+                <div class="page" id="home">
+                    <div class="welcome-banner">
+                        <h2 id="welcomeMessage">مرحباً بك في Easy TimeTable! 🎓</h2>
+                        <p>هنا يمكنك تنظيم وقتك ومتابعة مهامك الدراسية بطريقة ممتعة</p>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number" id="statLevel">1</div>
+                            <div class="stat-label">المستوى</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="statXP">0</div>
+                            <div class="stat-label">النقاط</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="statTasks">0%</div>
+                            <div class="stat-label">معدل الإنجاز</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="statExams">0</div>
+                            <div class="stat-label">امتحانات قادمة</div>
+                        </div>
+                    </div>
+
+                    <!-- الرسوم البيانية -->
+                    <div class="chart-container">
+                        <h3>ساعات الدراسة الأسبوعية</h3>
+                        <div class="chart-placeholder" id="studyChart">
+                            سيظهر الرسم البياني هنا بعد إضافة البيانات
+                        </div>
+                    </div>
+
+                    <div class="motivation-card">
+                        <div class="motivation-text" id="motivationText">"اطلبوا العلم من المهد إلى اللحد"</div>
+                        <div class="motivation-author">- حديث شريف</div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>المهام القادمة</h3>
+                            <button class="btn btn-primary" onclick="openAddTaskModal()">
+                                <i class="fas fa-plus"></i> إضافة مهمة
+                            </button>
+                        </div>
+                        <div id="upcomingTasksHome">
+                            <div class="empty-state">
+                                <i class="fas fa-tasks"></i>
+                                <p>لا توجد مهام حالياً</p>
+                                <button class="btn btn-primary" onclick="openAddTaskModal()">إضافة أول مهمة</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="rewards-section">
+                        <h3>الجوائز والإنجازات</h3>
+                        <div class="rewards-grid" id="rewardsGrid">
+                            <!-- الجوائز تضاف هنا ديناميكياً -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- صفحة الجدول الدراسي -->
+                <div class="page" id="timetable">
+                    <div class="timetable-controls">
+                        <div class="week-navigation">
+                            <button class="btn btn-secondary" onclick="changeWeek(-1)">
+                                <i class="fas fa-chevron-right"></i> الأسبوع السابق
+                            </button>
+                            <span id="currentWeek">الأسبوع الحالي</span>
+                            <button class="btn btn-secondary" onclick="changeWeek(1)">
+                                الأسبوع القادم <i class="fas fa-chevron-left"></i>
+                            </button>
+                        </div>
+                        <button class="btn btn-primary" onclick="openAddSubjectModal()">
+                            <i class="fas fa-plus"></i> إضافة مادة
+                        </button>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>جدول الدراسة الأسبوعي</h3>
+                        </div>
+                        <div id="timetableContainer">
+                            <div class="empty-state">
+                                <i class="fas fa-calendar-alt"></i>
+                                <p>لم تقم بإضافة جدول دراسي بعد</p>
+                                <button class="btn btn-primary" onclick="openAddSubjectModal()">إنشاء الجدول الدراسي</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- صفحة جدول الامتحانات -->
+                <div class="page" id="exams">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>جدول الامتحانات</h3>
+                            <button class="btn btn-primary" onclick="openAddExamModal()">
+                                <i class="fas fa-plus"></i> إضافة امتحان
+                            </button>
+                        </div>
+                        <div id="examsList">
+                            <div class="empty-state">
+                                <i class="fas fa-file-alt"></i>
+                                <p>لا توجد امتحانات مسجلة</p>
+                                <button class="btn btn-primary" onclick="openAddExamModal()">إضافة أول امتحان</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- صفحة وضع التركيز -->
+                <div class="page" id="focus">
+                    <div class="focus-timer">
+                        <h2>وضع التركيز (Pomodoro)</h2>
+                        <div class="timer-mode">
+                            <button class="mode-btn active" data-minutes="25">تركيز (25 د)</button>
+                            <button class="mode-btn" data-minutes="5">استراحة قصيرة (5 د)</button>
+                            <button class="mode-btn" data-minutes="15">استراحة طويلة (15 د)</button>
+                        </div>
+                        <div class="timer-display" id="timerDisplay">25:00</div>
+                        <div class="timer-controls">
+                            <button class="btn btn-success" id="startTimer">
+                                <i class="fas fa-play"></i> بدء
+                            </button>
+                            <button class="btn btn-warning" id="pauseTimer" disabled>
+                                <i class="fas fa-pause"></i> إيقاف
+                            </button>
+                            <button class="btn btn-danger" id="resetTimer">
+                                <i class="fas fa-stop"></i> إعادة تعيين
+                            </button>
+                        </div>
+                        <div style="margin-top: 20px;">
+                            <select id="focusSubject" class="select-control" style="background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3);">
+                                <option value="">اختر المادة للتركيز...</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>ملاحظات التركيز</h3>
+                        </div>
+                        <textarea id="focusNotes" class="form-control" rows="5" placeholder="اكتب ملاحظاتك أثناء جلسة التركيز..."></textarea>
+                        <button class="btn btn-primary" style="margin-top: 15px;" onclick="saveFocusNotes()">
+                            <i class="fas fa-save"></i> حفظ الملاحظات
+                        </button>
+                    </div>
+
+                    <!-- إحصائيات جلسات التركيز -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number" id="focusSessions">0</div>
+                            <div class="stat-label">جلسات التركيز</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalFocusTime">0</div>
+                            <div class="stat-label">دقيقة تركيز</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="avgFocusTime">0</div>
+                            <div class="stat-label">متوسط الجلسة</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="focusStreak">0</div>
+                            <div class="stat-label">أيام متتالية</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- صفحة الملف الشخصي -->
+                <div class="page" id="profile">
+                    <div class="profile-header">
+                        <div class="profile-avatar" id="profileAvatar">?</div>
+                        <h2 class="profile-name" id="profileName">طالب</h2>
+                        <p class="profile-grade" id="profileGrade">الصف: غير محدد</p>
+                        <div class="level-badge">
+                            <i class="fas fa-trophy"></i>
+                            <span>المستوى <span id="profileLevel">1</span></span>
+                        </div>
+                    </div>
+
+                    <div class="profile-stats">
+                        <div class="stat-card">
+                            <div class="stat-number" id="profileXP">0</div>
+                            <div class="stat-label">إجمالي النقاط</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="profileTasks">0</div>
+                            <div class="stat-label">المهام المنجزة</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="profileSubjects">0</div>
+                            <div class="stat-label">المواد المسجلة</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="profileDays">0</div>
+                            <div class="stat-label">أيام متابعة</div>
+                        </div>
+                    </div>
+
+                    <!-- إحصائيات متقدمة -->
+                    <div class="chart-container">
+                        <h3>توزيع ساعات الدراسة</h3>
+                        <div class="chart-placeholder" id="studyDistributionChart">
+                            سيظهر الرسم البياني بعد إضافة البيانات
+                        </div>
+                    </div>
+
+                    <div class="achievements-section">
+                        <h3>الإنجازات</h3>
+                        <div class="achievements-grid" id="achievementsGrid">
+                            <!-- الإنجازات تضاف هنا ديناميكياً -->
+                        </div>
+                    </div>
+
+                    <!-- إعدادات المستخدم -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>الإعدادات</h3>
+                        </div>
+                        <div class="form-group">
+                            <label>الإشعارات</label>
+                            <div>
+                                <label><input type="checkbox" id="classNotifications" checked> تنبيهات الحصص</label>
+                                <label><input type="checkbox" id="taskNotifications" checked> تذكير المهام</label>
+                                <label><input type="checkbox" id="motivationNotifications" checked> إشعارات التحفيز</label>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" onclick="exportAllData()">
+                            <i class="fas fa-download"></i> تصدير جميع البيانات
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation -->
+        <nav class="mobile-nav">
+            <div class="mobile-nav-items">
+                <a href="#" class="mobile-nav-item active" data-page="dashboard">
+                    <i class="fas fa-home"></i>
+                    <span>الرئيسية</span>
+                </a>
+                <a href="#" class="mobile-nav-item" data-page="timetable">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>الجدول</span>
+                </a>
+                <a href="#" class="mobile-nav-item" data-page="exams">
+                    <i class="fas fa-file-alt"></i>
+                    <span>الامتحانات</span>
+                </a>
+                <a href="#" class="mobile-nav-item" data-page="focus">
+                    <i class="fas fa-clock"></i>
+                    <span>التركيز</span>
+                </a>
+                <a href="#" class="mobile-nav-item" data-page="profile">
+                    <i class="fas fa-user"></i>
+                    <span>الملف</span>
+                </a>
+            </div>
+        </nav>
+    </div>
+
+    <!-- نموذج إضافة مهمة -->
+    <div class="modal" id="addTaskModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="taskModalTitle">إضافة مهمة جديدة</h3>
+                <button class="close-modal" onclick="closeModal('addTaskModal')">&times;</button>
+            </div>
+            <form id="addTaskForm">
+                <input type="hidden" id="taskId">
+                <div class="form-group">
+                    <label for="taskTitle">عنوان المهمة</label>
+                    <input type="text" id="taskTitle" class="form-control" placeholder="مثال: حل تمارين الرياضيات" required>
+                </div>
+                <div class="form-group">
+                    <label for="taskSubject">المادة</label>
+                    <input type="text" id="taskSubject" class="form-control" placeholder="مثال: الرياضيات" required>
+                </div>
+                <div class="form-group">
+                    <label for="taskType">نوع المهمة</label>
+                    <select id="taskType" class="select-control" required>
+                        <option value="">اختر النوع</option>
+                        <option value="study">مذاكرة</option>
+                        <option value="homework">واجب</option>
+                        <option value="project">مشروع</option>
+                        <option value="review">مراجعة</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="taskDate">التاريخ والوقت</label>
+                    <input type="datetime-local" id="taskDate" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="taskDuration">المدة المتوقعة (بالساعات)</label>
+                    <input type="number" id="taskDuration" class="form-control" min="0.5" max="8" step="0.5" placeholder="2" required>
+                </div>
+                <button type="submit" class="btn btn-primary" id="taskSubmitBtn">إضافة المهمة</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- نموذج إضافة مادة -->
+    <div class="modal" id="addSubjectModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="subjectModalTitle">إضافة مادة دراسية</h3>
+                <button class="close-modal" onclick="closeModal('addSubjectModal')">&times;</button>
+            </div>
+            <form id="addSubjectForm">
+                <input type="hidden" id="subjectId">
+                <div class="form-group">
+                    <label for="subjectName">اسم المادة</label>
+                    <input type="text" id="subjectName" class="form-control" placeholder="مثال: الرياضيات" required>
+                </div>
+                <div class="form-group">
+                    <label for="subjectDay">اليوم</label>
+                    <select id="subjectDay" class="select-control" required>
+                        <option value="">اختر اليوم</option>
+                        <option value="sunday">الأحد</option>
+                        <option value="monday">الإثنين</option>
+                        <option value="tuesday">الثلاثاء</option>
+                        <option value="wednesday">الأربعاء</option>
+                        <option value="thursday">الخميس</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="subjectTime">الوقت</label>
+                    <select id="subjectTime" class="select-control" required>
+                        <option value="">اختر الوقت</option>
+                        <option value="8:30-10:00">8:30 - 10:00</option>
+                        <option value="10:00-11:30">10:00 - 11:30</option>
+                        <option value="11:30-1:00">11:30 - 1:00</option>
+                        <option value="1:00-2:30">1:00 - 2:30</option>
+                        <option value="2:30-4:00">2:30 - 4:00</option>
+                        <option value="4:00-5:30">4:00 - 5:30</option>
+                        <option value="5:30-7:00">5:30 - 7:00</option>
+                        <option value="7:00-8:30">7:00 - 8:30</option>
+                        <option value="8:30-10:00pm">8:30 - 10:00 (مساءً)</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary" id="subjectSubmitBtn">إضافة المادة</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- نموذج إضافة امتحان -->
+    <div class="modal" id="addExamModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="examModalTitle">إضافة امتحان</h3>
+                <button class="close-modal" onclick="closeModal('addExamModal')">&times;</button>
+            </div>
+            <form id="addExamForm">
+                <input type="hidden" id="examId">
+                <div class="form-group">
+                    <label for="examSubject">المادة</label>
+                    <input type="text" id="examSubject" class="form-control" placeholder="مثال: الرياضيات" required>
+                </div>
+                <div class="form-group">
+                    <label for="examTitle">عنوان الامتحان</label>
+                    <input type="text" id="examTitle" class="form-control" placeholder="مثال: امتحان الفصل الأول" required>
+                </div>
+                <div class="form-group">
+                    <label for="examDate">تاريخ الامتحان</label>
+                    <input type="date" id="examDate" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="examTime">وقت الامتحان</label>
+                    <input type="time" id="examTime" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary" id="examSubmitBtn">إضافة الامتحان</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- script File -->
+    <script src="assist/js/capacitor-bundle.js"></script>
+    <script src="assist/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // منع الزر الأيمن
+            document.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+                alert('❌ ممنوع استخدام الزر الأيمن في هذا الموقع!');
+            });
+
+            // منع اختصارات الكيبورد
+            document.addEventListener('keydown', function(e) {
+                // منع Ctrl+U
+                if (e.ctrlKey && e.key === 'u') {
+                    e.preventDefault();
+                    alert('❌ ممنوع عرض الكود المصدر!');
+                    return false;
+                }
+                
+                // منع F12
+                if (e.key === 'F12') {
+                    e.preventDefault();
+                    alert('❌ ممنوع فتح أدوات المطورين!');
+                    return false;
+                }
+                
+                // منع Ctrl+Shift+I
+                if (e.ctrlKey && e.shiftKey && e.key === 'I') {
+                    e.preventDefault();
+                    alert('❌ ممنوع فتح أدوات المطورين!');
+                    return false;
+                }
+                
+                // منع Ctrl+Shift+C
+                if (e.ctrlKey && e.shiftKey && e.key === 'C') {
+                    e.preventDefault();
+                    alert('❌ ممنوع فتح أدوات المطورين!');
+                    return false;
+                }
+            });
+        });
+
+        // كشف إذا كانت أدوات المطورين مفتوحة
+        setInterval(function() {
+            const threshold = 160; // ارتفاع الشاشة عندما تفتح الأدوات
+            if (window.outerHeight - window.innerHeight > threshold || 
+                window.outerWidth - window.innerWidth > threshold) {
+                alert('أدوات المطورين مفتوحة!');
+                window.close(); // إغلاق النافذة
+            }
+        }, 1000);
+    </script>
+</body>
+
+</html>
+
+
